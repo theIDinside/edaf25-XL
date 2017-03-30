@@ -71,6 +71,12 @@ Reference manual: http://fileadmin.cs.lth.se/cs/Education/EDAF25/project/manualh
 
 Description (partial impl): http://fileadmin.cs.lth.se/cs/Education/EDAF25/project/overviewhbg.pdf
 
+Lectures on MVC: http://fileadmin.cs.lth.se/cs/Education/EDAF25/lectures/F6.pdf
+
+Lecture on MVC (begins at 1:03:35): https://www.youtube.com/watch?v=MIZrQ2smM30
+  @(1:06:15) _"The view is basically glorified HTML with placeholders"_  What he is saying here, in this context, is that the view-part of the MVC, is constructed with HTML, with tags in them, and in that way create what is called templates. This is done differently depending on what language you are programming in, JSP-HTML has <% %> in them for example, (there are different versions of the tags used in JSP), where you can place java-code for example, get variables from the model etc. 
+
+This is a very useful lecture. Watch it.
 ``` Java
 public static void main(String args[]) {
   // placeholder for code
