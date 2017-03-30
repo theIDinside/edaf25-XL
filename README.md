@@ -62,6 +62,8 @@ addActionEventListener((actevt) -> {
   // return void or some value here
 });
 ```
+One or more views registers with the model, as observers, through addObserver(...), according to the **Open-Closed-Principle**. 
+
 ### Resources
 Project description: http://fileadmin.cs.lth.se/cs/Education/EDAF25/project/assignment2hbg.pdf
 
@@ -75,3 +77,7 @@ public static void main(String args[]) {
   return 0;
 }
 ```
+
+- Observer design pattern
+- Open Closed Principle
+- Single Responsibility Principle
