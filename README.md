@@ -5,6 +5,13 @@ Course code: EDAF25 - Objektorienterad Modellering och Design, Projekt XL
 Model–View–Controller (MVC) is a software architectural pattern for implementing user interfaces on computers. It divides a given application into three interconnected parts in order to separate internal representations of information from the ways that information is presented to and accepted from the user.[1][2] The MVC design pattern decouples these major components allowing for efficient code reuse and parallel development.
 
 ### What is the Observer pattern?
+According to the classic definition coined by the GoF, the intent of the Observer Pattern is to
+
+    "Define a one-to-many dependency between objects so that when one object changes state, all
+    its dependents are notified and updated automatically." 
+
+![alt text](https://dzone.com/storage/temp/887275-classic-observer-pattern-class-diagram.jpg "Classic observer pattern")
+
 (example impl.) 
 ```Java
 // Subject (Observee)
@@ -22,7 +29,7 @@ public class Subject {
   }
   
   public void notifyObservers() {
-    observers.forEach((ob) -> ob.update())
+    observers.forEach(update());
   }
   
   public void register(Observer obs) {
@@ -66,15 +73,16 @@ One or more views registers with the model, as observers, through addObserver(..
 
 ### Resources
 Project description: http://fileadmin.cs.lth.se/cs/Education/EDAF25/project/assignment2hbg.pdf
-
 Reference manual: http://fileadmin.cs.lth.se/cs/Education/EDAF25/project/manualhbg.pdf
-
 Description (partial impl): http://fileadmin.cs.lth.se/cs/Education/EDAF25/project/overviewhbg.pdf
 
-Lectures on MVC: http://fileadmin.cs.lth.se/cs/Education/EDAF25/lectures/F6.pdf
+- Lectures on MVC: http://fileadmin.cs.lth.se/cs/Education/EDAF25/lectures/F6.pdf
+- Lecture on MVC (begins at 1:03:35): https://www.youtube.com/watch?v=MIZrQ2smM30
+  @(1:06:15) _"The view is basically glorified HTML with placeholders"_  
+  What he is saying here, in this context, is that the view-part of the MVC, is constructed with HTML, with tags in them, and in that way create what is called templates. This is done differently depending on what language you are programming in, JSP-HTML has <% %> in them for example, 
+  (there are different versions of the tags used in JSP), where you can place java-code for example, get variables from the model etc.
+- The Observer Pattern & Publish-Subscribe architecture: https://dzone.com/articles/the-observer-pattern-using-modern-java
 
-Lecture on MVC (begins at 1:03:35): https://www.youtube.com/watch?v=MIZrQ2smM30
-  @(1:06:15) _"The view is basically glorified HTML with placeholders"_  What he is saying here, in this context, is that the view-part of the MVC, is constructed with HTML, with tags in them, and in that way create what is called templates. This is done differently depending on what language you are programming in, JSP-HTML has <% %> in them for example, (there are different versions of the tags used in JSP), where you can place java-code for example, get variables from the model etc. 
 
 This is a very useful lecture. Watch it.
 ``` Java
