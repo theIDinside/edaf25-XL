@@ -95,3 +95,13 @@ public static void main(String args[]) {
 - Observer design pattern
 - Open Closed Principle
 - Single Responsibility Principle
+
+"Another oft made specialization is the removal of the observerState member variable from the ConcreteObserver class. <br>
+In some cases, a concrete observer does not need to store the new state of the Subject, but rather, simply view the <br>
+state of the subject at the time the state is updated. For example, if an observer prints member variables of the updated <br> 
+state to standard output, the observerState member variable can be removed. The removal of this member variable removes <br>
+the association between the ConcreteObserver and the State class." <br>
+
+In this case, the ConcreteObserver would be the classes in the view - so for example, a SlotLabel, would not need
+to have a reference to the state, (i.e the data/calculation). Perhaps.
+
