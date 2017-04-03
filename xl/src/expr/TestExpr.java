@@ -17,8 +17,8 @@ public class TestExpr {
             Add add = new Add(expr, expr2);
             System.out.println("Expression toString, with higher precedence: " + expr.toString(1));
             Environment env = name -> {
-                if (name.equals("A3"))
-                    return 1;
+                if (name.equals("A3"))  // <- this is where variable v "ends up", since we're passing the lambda object of type Environment
+                    return 1;           // to the value() method of variable v later
                 if (name.equals("A2"))
                     return 2;
                 if (name.equals("A1"))
@@ -27,7 +27,7 @@ public class TestExpr {
                 return 0;
             };
             // usage of variable, depends on an environment actually holding an A1
-            Variable v = new Variable("A3");
+            Variable v = new Variable("A3"); // variable v.value(
             System.out.println("Variable A3: " + v.toString(0) +":"+ v.value(env));
 
             System.out.println(expr);

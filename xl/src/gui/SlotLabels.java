@@ -1,14 +1,17 @@
 package gui;
 
+import model.XLSheet;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import javax.swing.SwingConstants;
 
 public class SlotLabels extends GridPanel {
     private List<SlotLabel> labelList;
 
-    public SlotLabels(int rows, int cols) {
+    public  SlotLabels(int rows, int cols, XLSheet xlSheet) {
         super(rows + 1, cols);
         labelList = new ArrayList<SlotLabel>(rows * cols);
         for (char ch = 'A'; ch < 'A' + cols; ch++) {
@@ -17,7 +20,8 @@ public class SlotLabels extends GridPanel {
         }
         for (int row = 1; row <= rows; row++) {
             for (char ch = 'A'; ch < 'A' + cols; ch++) {
-                SlotLabel label = new SlotLabel();
+                SlotLabel label = new SlotLabel(
+                        Character.toString(ch).concat(Integer.toString(row)) , xlSheet );
                 add(label);
                 labelList.add(label);
             }
