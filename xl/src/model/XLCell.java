@@ -6,8 +6,26 @@ import expr.Environment;
  * Created by cx on 2017-04-02.
  */
 // Define what we need XLCell to do:
-public interface XLCell<Data> {
-    double getValue(Data env);  // get the double real-valued value that XLCell can refer to
-    String rawData();           // get the raw data that the cell refers to, i.e "A14=#hello this is a string" for example.
-    String interpretedData(Data env); //
+interface CellStrategy {
+    double getValue(Environment e);
+}
+
+class XLCell<V> {
+    V data;
+    CellStrategy strategy;
+
+    public XLCell(V data, CellStrategy cs) {
+        strategy = cs;
+        this.data = data;
+    }
+
+    public double getValue(Environment e) {
+        return strategy.getValue(e);
+    }
+
+    public void setStrategy(CellStrategy strategy){
+        this.strategy = strategy;
+    }
+
+    public String toString() { return data.toString(); }
 }

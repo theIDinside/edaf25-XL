@@ -28,6 +28,8 @@ XLCell (??)
     
 10. ##### Om  ett  uttryck  i  kalkylarket  refererar  till  sig  själv,  direkt  eller  indirekt,  så kommer  det  att  bli bekymmer vid beräkningen av uttryckets värde. Föresl något sätt att upptäcka sadana cirkulära beroenden! Det  finns  en  elegant  lösning  med  hjälp  av  strategimönstret  som  du far  chansen  att upptäcka.     Om du inte hittar den sa kommer handledaren att avslöja den.
     
+    
+    
     "Another oft made specialization is the removal of the observerState member variable from the ConcreteObserver class. <br>
     In some cases, a concrete observer does not need to store the new state of the Subject, but rather, simply view the <br>
     state of the subject at the time the state is updated. For example, if an observer prints member variables of the<br>

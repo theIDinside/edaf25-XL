@@ -80,6 +80,7 @@ public class ExprParser {
     }
 
     private Expr expr() throws IOException {
+        System.out.println("expr; token: " + token);
         Expr result, term;
         result = term();
         while (token == '+' || token == '-') {
@@ -99,6 +100,7 @@ public class ExprParser {
     }
 
     private Expr factor() throws IOException {
+        System.out.println("factor; token: " + token);
         Expr e;
         switch (token) {
         case '(':
@@ -126,6 +128,7 @@ public class ExprParser {
     }
 
     private Expr term() throws IOException {
+        System.out.println("term; token: " + token);
         Expr result, factor;
         result = factor();
         while (token == '*' || token == '/') {
