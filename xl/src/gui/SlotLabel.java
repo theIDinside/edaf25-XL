@@ -1,6 +1,7 @@
 package gui;
 
 import model.XLCell;
+import model.XLCurrentCell;
 import model.XLSheet;
 
 import java.awt.*;
@@ -10,31 +11,47 @@ import java.awt.event.MouseListener;
 import java.util.Observable;
 import java.util.Observer;
 
-import static java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
-import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
-import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
-
 public class SlotLabel extends ColoredLabel implements MouseListener, Observer {
     String address; // "A1" or "G7" etc..
     private XLSheet xlSheet;
-        // reference to Sheet?
+    XLCurrentCell currentCell;
+
+    public String getAddress() {
+        return address;
+    }
+
+    // reference to Sheet?
     // public static String clickAddress = null;
-    public SlotLabel(String addr, XLSheet xlSheet) {
-        // super("                    ", Color.WHITE, RIGHT);
-        super(addr, Color.WHITE, RIGHT); // for testing purposes
+    public SlotLabel(String addr, XLCurrentCell current, XLSheet xlSheet) {
+        super("                    ", Color.WHITE, RIGHT);
+        // super(addr, Color.WHITE, RIGHT); // for testing purposes
         this.xlSheet = xlSheet;
         this.address = addr;
         addMouseListener(this);
+        currentCell = current;
+        xlSheet.addObserver(this);
+        if(xlSheet.getEntries().contains(address))
+            xlSheet.addObserver(this);
+        // if we register _all_ slotlabels here, with xlSheet, then *every* slotlabel
+        // will be notified and updated every time a change has been made. If we hade 10 000 x 10 000 cells,
+        // that would lead up to 100 000 000 (one hundred million) notifications... murder death kill.
+
+    }
+
+    public void attach() {
+
+    }
+
+    public void detach() {
+        xlSheet.deleteObserver(this);
     }
 
     @Override
     public void mouseClicked(MouseEvent event) {
+        currentCell.restoreLook();
         this.setBackground(Color.CYAN);
-        System.out.println(event.getComponent().getParent().toString());
-        System.out.println(event.getComponent().getParent().getParent().toString());
-        System.out.println(event.getComponent().getParent().getParent().getParent().getComponentCount());
-        Component c = event.getComponent().getParent().getParent();
-
+        System.out.print(address);
+        currentCell.setObserver(this);
     }
 
     @Override
@@ -59,15 +76,16 @@ public class SlotLabel extends ColoredLabel implements MouseListener, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        String viewText = Double.toString(xlSheet.value(address));
+        setText(viewText);
+        currentCell.deleteObserver(this);
     }
+
+    @Override
+    public String toString() { return address; }
 
     public void attachTo(XLSheet modelData) {
         modelData.registerViewElement(this);
-    }
-
-    public void update() {
-
     }
     // needs to register with corresponding cell in Sheet
     // create methods for handling mouse input (clicks)

@@ -10,16 +10,18 @@ public class TestExpr {
             System.out.println("toString(0): " + expr.toString(0));
             System.out.println("value(null): " + expr.value(null));
             expr = parser.build("A3+A2*A1");
+
             Environment env = address -> {
-                if (name.equals("A3"))  // <- this is where variable v "ends up", since we're passing the lambda object of type Environment
+                if (address.equals("A3"))  // <- this is where variable v "ends up", since we're passing the lambda object of type Environment
                     return 1;           // to the value() method of variable v later
-                if (name.equals("A2"))
+                if (address.equals("A2"))
                     return 2;
-                if (name.equals("A1"))
+                if (address.equals("A1"))
                     return 3;
-                System.out.println(name + " is undefined");
+                System.out.println(address + " is undefined");
                 return 0;
             };
+            System.out.println("Expr.toString():" + expr.toString() + " Expr.value(env: E):" + expr.value(env));
             // usage of variable, depends on an environment actually holding an A1
             Variable v = new Variable("A3"); // variable v.value(
             System.out.println("Variable A3: " + v.toString(0) +":"+ v.value(env));

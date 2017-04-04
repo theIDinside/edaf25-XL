@@ -4,6 +4,7 @@ import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 import gui.menu.XLMenuBar;
+import model.XLCurrentCell;
 import model.XLSheet;
 
 import java.awt.Graphics;
@@ -16,7 +17,7 @@ import javax.swing.JPanel;
 public class XL extends JFrame implements Printable {
     private static final int ROWS = 10, COLUMNS = 8;
     private XLCounter counter;
-    private StatusLabel statusLabel = new StatusLabel();
+
     private XLList xlList;
 
     public XL(XL oldXL) {
@@ -27,12 +28,15 @@ public class XL extends JFrame implements Printable {
         super("Untitled-" + counter);
         this.xlList = xlList;
         this.counter = counter;
-        XLSheet xlSheet = new XLSheet();
         xlList.add(this);
+        XLCurrentCell xlCurrentCell = new XLCurrentCell();
         counter.increment();
-        JPanel statusPanel = new StatusPanel(statusLabel);
-        JPanel sheetPanel = new SheetPanel(ROWS, COLUMNS, xlSheet);
-        Editor editor = new Editor(xlSheet);
+
+        XLSheet xlSheet = new XLSheet(/* give a reference to the panel, which we should control / update? */);
+        StatusLabel statusLabel = new StatusLabel(xlSheet);
+        JPanel statusPanel = new StatusPanel(statusLabel, xlCurrentCell);
+        JPanel sheetPanel = new SheetPanel(ROWS, COLUMNS, xlCurrentCell, xlSheet);
+        Editor editor = new Editor(xlCurrentCell, xlSheet);
         add(NORTH, statusPanel);
         add(CENTER, editor);
         add(SOUTH, sheetPanel);
