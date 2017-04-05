@@ -1,8 +1,8 @@
 package gui;
 
-import javafx.beans.Observable;
 import model.XLCurrentCell;
 import model.XLSheet;
+import util.XLException;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -25,30 +25,37 @@ public class Editor extends JTextField implements ActionListener, Observer {
     @Override
     public void actionPerformed(ActionEvent e) {
         String input = this.getText();
-        System.out.print("Action performed by editor");
         if(input.equals("")) {
-            xlSheet.removeData(""); // <- change this!
+            xlSheet.removeData(editCell.getCurrentAddress());
+            setText("");
+            editCell.setText("");
         }
         else {
-            if(input != null) System.out.println("Input:" + input);
             try {
-                xlSheet.addData(editCell.getAddress(), input);
+                xlSheet.addData(editCell.getCurrentAddress(), input);
+                setText(String.valueOf(xlSheet.getCell(editCell.getCurrentAddress())));
+                if(xlSheet.hasCell(editCell.getCurrentAddress())) {
+                    update(null, input);
+                    editCell.setText(xlSheet.getNotEvalContent(editCell.getCurrentAddress()));
+                }
+                else setText("");
             } catch (IOException ioe) {
-                ioe.getMessage();
+                System.out.println(ioe.getMessage());
+            } catch (XLException xle) {
+                System.out.println("XLException caught. What to do now?.. Hmm..?");
             }
-
-            update(null, input);
-/*
-            xlSheet.addObserver(
-                    xlSheet.slotLabelAt(
-                    editCell.getAddress()
-                    )
-            );*/
+            catch (Exception ex)
+            {   // default
+                System.out.println(ex.toString());
+            }
         }
     }
 
     @Override
     public void update(java.util.Observable o, Object arg) {
-           setText(xlSheet.getStringExpression(editCell.toString()));
+        if(xlSheet.hasCell(editCell.getCurrentAddress()))
+            setText(String.valueOf(xlSheet.getCell(editCell.getCurrentAddress())));
+        else
+            setText("");
     }
 }

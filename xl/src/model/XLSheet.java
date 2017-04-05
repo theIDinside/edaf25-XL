@@ -19,6 +19,7 @@ public class XLSheet extends Observable implements Environment {
     Map<String, XLCell> theSheet;
     // this could possibly be Map<Variable, XLCell>
     public String errorMsg = null;
+    public String statusMessage = "";
     public Stack<String> errorMessageStack;
     public XLSheet() {
         theSheet = new HashMap<>();
@@ -26,9 +27,12 @@ public class XLSheet extends Observable implements Environment {
     }
 
     public String getLastErrorMessage() {
-        if(!errorMessageStack.empty()) {
-            return errorMessageStack.pop();
-        } else return "";
+        return statusMessage;
+    }
+
+    public XLCell getCell(String addr) {
+        if(theSheet.containsKey(addr)) return theSheet.get(addr);
+        else return null;
     }
 
     /**
@@ -37,37 +41,49 @@ public class XLSheet extends Observable implements Environment {
      * @param theData
      */
     public void addData(String address, String theData) throws IOException {
-        XLCell xlcell = null;
+        XLCell backup = theSheet.get(address);
         if(theData.length() > 0 && theData.charAt(0) == '#') // the following will be a valid string
         {
             // input in box is a string, prefixed by '#'
-            xlcell = new XLCell<String>(theData.substring(1), e -> 0.0, () -> theData.substring(1));
+            final String content = theData.substring(1);
+            XLCell xlcell = new XLCell<String>(theData, e -> content);
             theSheet.put(address, xlcell);
-        } else { // otherwise it is an expression.. let the recursive descent parser do it's magic
-            ExprParser ep = new ExprParser();
-            Expr exp = ep.build(theData);  // build expression from input
-            XLCell xlc = new XLCell<Expr>(exp,exp::value, () -> address);
-            theSheet.put(address, new XLCell<Expr>(exp, (e) -> {
-                System.out.println("Hello from lambda! This son'o'abitch should throw");
+        } else {
+            Expr exp;
+            try {
+                exp = new ExprParser().build(theData);  // build expression from input
+            } catch (IOException ioe) {
+                errorMessageStack.push("Any kind of ol fuckboy error is made now. " + ioe.getMessage());
+                statusMessage = ioe.getMessage();
+                return;
+            }
+            XLCell xlc = new XLCell<>(exp, (cs) -> Double.toString(exp.value(this)));
+            theSheet.put(address, new XLCell<>(exp, (e) -> {
+                this.errorMsg = String.format("Circular reference error %s", exp.toString());
+                this.statusMessage = errorMsg;
                 throw new XLException("Circular reference error");
-            }, () -> "Error! Circular reference at: " + address)); // pass in method reference
-
+            }));
                 try {
                     xlc.getValue(this);
                 } catch (XLException xle) {
-                    errorMsg = "Erroneous input.";
-                    System.out.println("Error parsing expression! " + xle.getMessage());
                     removeData(address);
+                    setChanged();
+                    notifyObservers();
                     return;
                 } catch (NullPointerException npe) {
-                    errorMsg = "No cell found";
+                    statusMessage = "No cell found";
                     System.out.println("Nullpointer exception!" + npe.getMessage());
                     removeData(address);
+                    setChanged();
+                    notifyObservers();
                     return;
                 }
             theSheet.put(address, xlc);
             }
         theSheet.entrySet().forEach(System.out::println);
+        setChanged();
+        notifyObservers();
+        statusMessage = "";
     }
 
     public boolean removeData(String address) {
@@ -95,37 +111,26 @@ public class XLSheet extends Observable implements Environment {
         if(theSheet.get(address) == null) {
             throw new XLException(String.format("Cell %s does not exist.", address));
         }
-        return theSheet.get(address).getValue(this);
-    }
-
-    public Set<Map.Entry<String, XLCell>> getEntries() {
-        return theSheet.entrySet();
-    }
-
-    public String getStringExpression(String address) {
-        XLCell cell = theSheet.get(address);
-        if(cell == null) {
-            System.out.print("FUCUCUAUSCUUASC");
-            return "";
-        }
         try {
-            return cell.toString();
+            Double d = Double.valueOf(theSheet.get(address).getValue(this));
+        } catch (NumberFormatException nfe) {
+            return 0.0;
         } catch (XLException xle) {
-            return "Error";
+            System.out.println("Holy shit! Errors are everywhere!");
         }
+        return Double.valueOf(theSheet.get(address).getValue(this));
     }
 
-    public String cellValueToString(String address) {
-        if(theSheet.get(address) == null) {
-            return "";
-        } else
-        {
-
-        }
-        return null; // unimplemented!
+    public boolean hasCell(String address) {
+        return theSheet.get(address) != null;
     }
 
-     /**
+    public String getNotEvalContent(String address) {
+        XLCell cell = theSheet.get(address);
+        return cell.getValue(this);
+    }
+
+    /**
      * methods:
      * removeCell(String address), unregister ViewElement <- XLSheet.XLCell, remove cell from XLSheet
      * getData(XLCell cell),
@@ -143,6 +148,8 @@ public class XLSheet extends Observable implements Environment {
      * when the "walk over"-algorithm reaches back to the first cell again, it can throw an exception, or take a different if branch,
      * or something to that effect.
     **/
+
+
 
 }
 

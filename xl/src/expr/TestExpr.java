@@ -9,7 +9,10 @@ public class TestExpr {
             Expr expr = parser.build("1+2*3");
             System.out.println("toString(0): " + expr.toString(0));
             System.out.println("value(null): " + expr.value(null));
+            System.out.println("UN_EVALUATED EXPR: " + expr.value(null));
             expr = parser.build("A3+A2*A1");
+            System.out.println("UN_EVALUATED EXPR: " + expr.toString());
+
 
             Environment env = address -> {
                 if (address.equals("A3"))  // <- this is where variable v "ends up", since we're passing the lambda object of type Environment
@@ -21,6 +24,7 @@ public class TestExpr {
                 System.out.println(address + " is undefined");
                 return 0;
             };
+            System.out.println("EVALUATED EXPR: " + expr.value(env));
             System.out.println("Expr.toString():" + expr.toString() + " Expr.value(env: E):" + expr.value(env));
             // usage of variable, depends on an environment actually holding an A1
             Variable v = new Variable("A3"); // variable v.value(

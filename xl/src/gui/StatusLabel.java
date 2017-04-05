@@ -15,7 +15,7 @@ public class StatusLabel extends ColoredLabel implements Observer {
     }
 
     public void update(Observable observable, Object arg) {
-        if(arg instanceof String) setText((String)arg);
-        else setText(xlSheet.getLastErrorMessage());
+            System.out.print("   error msg:   " + xlSheet.getLastErrorMessage());
+            setText(xlSheet.getLastErrorMessage());
     }
 }

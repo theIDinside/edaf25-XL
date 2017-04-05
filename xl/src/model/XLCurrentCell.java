@@ -14,15 +14,21 @@ public class XLCurrentCell extends Observable {
     }
     public void setObserver(SlotLabel sl) {
         watchedLabel = sl;
-        setChanged();
+        if(countObservers() > 0)
         notifyObservers();
+        setChanged();
         addObserver(sl);
     }
 
+    public void setText(String str) {
+        watchedLabel.setText(str);
+        setChanged();
+        notifyObservers();
+    }
     public void restoreLook() { watchedLabel.setBackground(Color.WHITE);}
     public String toString() { return watchedLabel.toString(); }
 
-    public String getAddress() {
+    public String getCurrentAddress() {
         return watchedLabel.getAddress();
     }
 }

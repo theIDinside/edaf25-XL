@@ -80,7 +80,6 @@ public class ExprParser {
     }
 
     private Expr expr() throws IOException {
-        System.out.println("expr; token: " + token);
         Expr result, term;
         result = term();
         while (token == '+' || token == '-') {
