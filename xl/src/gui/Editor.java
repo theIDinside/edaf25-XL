@@ -41,8 +41,9 @@ public class Editor extends JTextField implements ActionListener, Observer {
             } catch (IOException | XLException ioe) {
                 System.out.println(ioe.getMessage());
             } catch (CircularReferenceException cre) {
-                xlSheet.forcePutSlot(cre.getLastAddress(), cre.oldSlot);
+                xlSheet.forcePutSlot(cre.getLastAddress(), cre.getLastSlot());
                 editSlot.setErrorText("Error");
+                xlSheet.notifyObservers();
                 /* We need to update:
                     status panel
                     SlotLabel (print something like "ERROR!" in the slot);

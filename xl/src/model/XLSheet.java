@@ -47,11 +47,12 @@ public class XLSheet extends Observable implements Environment {
             Slot slot = new Slot<String>(theData, e -> content);
             theSheet.put(address, slot);
         } else {
-            Expr exp;
-
-            exp = new ExprParser().build(theData);  // build expression from input
+            final Expr exp = new ExprParser().build(theData);  // build expression from input
+            // objects are init'd as final, because they need to be 'effectively final' for lambdas
             Slot xlslot;
             try {
+                // construct new slot
+                // pass evaluation strategy as 2nd param
                 xlslot = new Slot<>(exp, (ss) -> String.valueOf(exp.value(this)));
             }
             catch (NumberFormatException nfe) {
@@ -59,13 +60,22 @@ public class XLSheet extends Observable implements Environment {
                 se.initCause(nfe);
                 throw se;
             }
-            Slot oldSlot = theSheet.replace(address, new Slot<>(exp, (e) -> {
-                errorMsg = String.format("Circular reference %s", exp.toString());
-                statusMessage = errorMsg;
-                throw new CircularReferenceException("Circular reference error", address, exp);
+            // retrieve the old slot, if there is one, replace it with the new one,
+            // which has a "circular reference strategy" basically
+            Slot oldSlot = theSheet.get(address);
+            theSheet.replace(address, new Slot<>(exp, (e) -> {
+                statusMessage = errorMsg = String.format("Circular reference %s", exp.toString());
+                setChanged();
+                throw new CircularReferenceException(
+                        String.format("Circular reference error at address %s", address),
+                        address,
+                        exp, oldSlot);
             }));
-            xlslot.read(this); // throws exception
-            // passed
+            // throws exception, if the slot to be eval'd, tries to be "dereferenced"
+            // (c++ terminology here, perhaps not fitting)
+            xlslot.read(this);
+            // passed, exception was not thrown
+            System.out.println("Faulty motherfucker");
             theSheet.put(address, xlslot);
             }
             theSheet.entrySet().forEach(System.out::println);
@@ -79,7 +89,7 @@ public class XLSheet extends Observable implements Environment {
      * @param address
      * @param slot
      */
-        public void forcePutSlot(String address, Slot slot) {
+    public void forcePutSlot(String address, Slot slot) {
             theSheet.put(address, slot);
         }
 

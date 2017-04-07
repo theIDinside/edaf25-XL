@@ -9,6 +9,7 @@ import model.Slot;
 public class CircularReferenceException extends RuntimeException {
     String address;
     Expr expr;
+    String stringExpr;
     Slot oldSlot;
     public CircularReferenceException(String message) {
         super(message);
@@ -21,11 +22,21 @@ public class CircularReferenceException extends RuntimeException {
         super(message);
         this.address = address;
         this.expr = expr;
+        stringExpr = null;
     }
+
+    public CircularReferenceException(String message, String address, String expr) {
+        super(message);
+        this.address = address;
+        this.stringExpr= expr;
+        expr = null;
+    }
+
     public CircularReferenceException(String message, String address, Expr exceptionGeneratingExpr, Slot oldSlot) {
         super(message);
         this.address = address;
         this.expr = exceptionGeneratingExpr;
+        this.oldSlot = oldSlot;
     }
 
     public String getFaultyExpression() { return expr.toString(); }
