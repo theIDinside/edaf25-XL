@@ -1,11 +1,9 @@
 package gui;
 
-import model.XLCell;
-import model.XLCurrentCell;
+import model.CurrentSlot;
 import model.XLSheet;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Observable;
@@ -14,13 +12,13 @@ import java.util.Observer;
 public class SlotLabel extends ColoredLabel implements MouseListener, Observer {
     String address; // "A1" or "G7" etc..
     private XLSheet xlSheet;
-    XLCurrentCell currentCell;
+    CurrentSlot currentCell;
 
     public String getAddress() {
         return address;
     }
 
-    public SlotLabel(String addr, XLCurrentCell current, XLSheet xlSheet) {
+    public SlotLabel(String addr, CurrentSlot current, XLSheet xlSheet) {
         super("                    ", Color.WHITE, RIGHT);
         // super(addr, Color.WHITE, RIGHT); // for testing purposes
         this.xlSheet = xlSheet;

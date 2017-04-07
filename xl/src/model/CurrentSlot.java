@@ -7,9 +7,9 @@ import java.util.Observable;
 /**
  * Created by cx on 2017-04-03.
  */
-public class XLCurrentCell extends Observable {
+public class CurrentSlot extends Observable {
     private SlotLabel watchedLabel;
-    public XLCurrentCell() {
+    public CurrentSlot() {
 
     }
     public void setObserver(SlotLabel sl) {
@@ -24,6 +24,10 @@ public class XLCurrentCell extends Observable {
         watchedLabel.setText(str);
         setChanged();
         notifyObservers();
+    }
+    public void setErrorText(String str) {
+        watchedLabel.setText(str);
+        watchedLabel.setBackground(Color.RED);
     }
     public void restoreLook() { watchedLabel.setBackground(Color.WHITE);}
     public String toString() { return watchedLabel.toString(); }
