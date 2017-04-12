@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.Observable;
 
 /**
- * Created by cx on 2017-04-03.
+ * Created by cx(theIDinside) on 2017-04-03.
  */
 public class CurrentSlot extends Observable {
     private SlotLabel watchedLabel;

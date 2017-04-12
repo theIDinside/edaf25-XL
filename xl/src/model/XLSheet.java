@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by cx on 2017-04-02.
+ * Created by cx(theIDinside) on 2017-04-02.
+ *
  */
 // The subject, in the Publish-Subject design pattern, or what the
 // Java The Complete Reference (2014) calls the Model-Delegate architecture.
@@ -61,7 +62,7 @@ public class XLSheet extends Observable implements Environment {
                 throw se;
             }
             // retrieve the old slot, if there is one, replace it with the new one,
-            // which has a "circular reference strategy" basically
+            // which has a "circular reference strategy"
             Slot oldSlot = theSheet.get(address);
             theSheet.replace(address, new Slot<>(exp, (e) -> {
                 statusMessage = errorMsg = String.format("Circular reference %s", exp.toString());
@@ -103,11 +104,6 @@ public class XLSheet extends Observable implements Environment {
             return false;
     }
 
-    // will probably be removed
-    public <ViewElement> void registerViewElement(ViewElement elem) {
-        addObserver((Observer) elem);
-    }
-
     /***
      * Evaluates expression at address, of type String, returns real-value double
      * @param address
@@ -129,25 +125,6 @@ public class XLSheet extends Observable implements Environment {
         Slot cell = theSheet.get(address);
         return cell.read(this);
     }
-
-    /**
-     * methods:
-     * removeCell(String address), unregister ViewElement <- XLSheet.Slot, remove cell from XLSheet
-     * getData(Slot cell),
-     * clear(), called from gui.menu.ClearMenuItem // for all elements: null
-     * save(), save theSheet
-     * load(), load theSheet with data from util.XLBufferedReader (might be moved to another pkg, according to assignment)
-     * validateInput(), check for errors, circular dependencies, etc. Read assignment material for more info
-     * as this method will "walk" over the cells, in order to validate for example an expression, we should be able
-     * to pass along a function that, depending on what we're after, maps cellcontent -> updating notifyList
-     * Since our Slot will either be an abstract class, or an interface definining behavior instead of inheritance,
-     * a static builder class is in it's place. Using the slotStrategy pattern (in which case Slot will be an interface)
-     * one can define different behaviors, depending on "who" is calling the methods, that the interface require the class to have.
-     * According to design meeting prep questions, using the slotStrategy pattern will help with dealing with circular dependencies.
-     * This will be achieved by changing the behavior of the Slot, while "walking" over an expression. So if there is a circular dep.
-     * when the "walk over"-algorithm reaches back to the first cell again, it can throw an exception, or take a different if branch,
-     * or something to that effect.
-    **/
 
 }
 
