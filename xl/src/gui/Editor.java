@@ -35,12 +35,10 @@ public class Editor extends JTextField implements ActionListener, Observer {
                 slotSheet.addData(address, input);
                 setText(String.valueOf(slotSheet.getSlot(address)));
                 if(slotSheet.hasCell(address)) {
-                     // update(null, input);
-                    editSlot.setText(slotSheet.display(address));
+                   editSlot.setText(slotSheet.display(address));
                 }
                 else setText("");
             } catch (IOException | XLException | NumberFormatException ioe) {
-                System.out.println("ayo: " + ioe.getMessage());
                 slotSheet.setLastErrorMessage(ioe.getMessage());
                 slotSheet.setErrorMsg(address);
             } catch (NullPointerException npe) {

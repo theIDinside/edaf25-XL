@@ -17,7 +17,6 @@ import java.util.*;
 public class SlotSheet extends Observable implements Environment {
     HashMap<String, SlotInterface> theSheet;
     // this could possibly be Map<Variable, Slot>
-    public String errorMsg = null;
     public String statusMessage = "";
     String lastMessage;
     public SlotSheet() {
@@ -31,21 +30,12 @@ public class SlotSheet extends Observable implements Environment {
     public void setErrorMsg(String address) {
         statusMessage = "Error at: " + address + " " + getLastErrorMessage();
     }
-    /*public Slot getCell(String addr) {
-        if(theSheet.containsKey(addr)) return theSheet.get(addr);
-        else return null;
-    }*/
 
     public SlotInterface getSlot(String addr) {
         if(theSheet.containsKey(addr)) return theSheet.get(addr);
         else return null;
     }
 
-    /**
-     * Build & add a new cell, corresponding to view cell at address address, from theData to theSheet
-     * @param address
-     * @param data
-     */
     public void addData(String address, String data) throws IOException, XLException {
         SlotInterface slot;
         try {
@@ -82,22 +72,6 @@ public class SlotSheet extends Observable implements Environment {
         return true;
     }
 
-    private boolean validateSlot2(String address, SlotInterface slot) {
-        SlotInterface old = theSheet.get(address);
-        theSheet.put(address, new PlaceHolderSlot());
-        try {
-            slot.value(this);
-        } catch (XLException | NullPointerException exception) { // if slot.value(this) fails
-            System.out.println("MOTHERFUCKER VALIDATE FUNCTION");
-            statusMessage = "Erroneous input:   ";
-            setLastErrorMessage(exception.getMessage());
-            theSheet.put(address, old);
-            throw exception;
-            // return false;
-        }
-        return true;
-    }
-
     public boolean removeData(String address) {
         if(theSheet.containsKey(address)) {
             theSheet.remove(address);
@@ -128,18 +102,15 @@ public class SlotSheet extends Observable implements Environment {
             Map.Entry<String, SlotInterface> entry = itr.next();
             String key = entry.getKey();
             SlotInterface value = entry.getValue();
-            map.put(key, new PlaceHolderSlot());
-            // theSheet.put(key, new PlaceHolderSlot());
+            map.put(key, new PlaceHolderSlot()); // "dereference" this to see if the loaded map has circular references
             try {
                 if (validateSlot(key, value)) {
                     theSheet.put(key, value);
                 } else {
-                    System.out.println("FUCK U");
                     theSheet = temp;
                     isOk = false;
                 }
             } catch (Exception e) {
-                System.out.println("FUUUUUUUAUCK");
                 throw e;
             }
         }
@@ -164,10 +135,9 @@ public class SlotSheet extends Observable implements Environment {
         if(theSheet.containsKey(address)) try {
             return theSheet.get(address).display(this);
         } catch (XLException | NullPointerException xlnpe) {
-            // if the "dereferencing" while loading from files and throwing exceptions defined in expr, handle here
+            // if the "dereferencing" while _loading_ from files and throwing exceptions defined in expr, handle here
             setErrorMsg(xlnpe.getMessage());
-            throw xlnpe;
-            // return "++++";
+            throw xlnpe; // re-throw the exception to be handled somewhere else.
         }
         else return "";
     }

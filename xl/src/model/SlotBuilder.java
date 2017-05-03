@@ -12,13 +12,10 @@ import java.io.IOException;
 public class SlotBuilder {
     public static SlotInterface BuildSlot(String data) {
         if(data.charAt(0) == '#') {
-            // return textslot
             return new TextSlot(data);
         }
         try {
-            Expr expr = new ExprParser().build(data);
-            ExprSlot es = new ExprSlot(expr);
-            return es;
+            return new ExpressionSlot(new ExprParser().build(data));
         }  catch (IOException e) {
             throw new XLException("Error parsing: " + e.getMessage());
         }

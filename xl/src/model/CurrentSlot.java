@@ -24,10 +24,7 @@ public class CurrentSlot extends Observable {
         setChanged();
         notifyObservers();
     }
-    public void setErrorText(String str) {
-        watchedLabel.setText(str);
-        watchedLabel.setBackground(Color.RED);
-    }
+
     public void restoreLook() { watchedLabel.setBackground(Color.WHITE);}
     public String toString() { return watchedLabel.toString(); }
 

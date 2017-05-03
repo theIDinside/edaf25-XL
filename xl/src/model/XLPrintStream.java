@@ -11,8 +11,7 @@ public class XLPrintStream extends PrintStream {
     }
 
     public void save(Set<Entry<String, SlotInterface>> set) {
-        // ooh lambdas are sexy
-        set.forEach((e) -> println(e.getKey() + "=" + e.getValue()));
+        set.forEach((e) -> println(e.getKey() + "=" + e.getValue())); // ooh there's something sexy about lambdas & Java 1.8
         flush();
         close();
     }

@@ -6,10 +6,10 @@ import expr.Expr;
 /**
  * Created by cx on 5/3/17.
  */
-public class ExprSlot implements SlotInterface {
+public class ExpressionSlot implements SlotInterface {
     Expr exp;
 
-    ExprSlot(Expr expr) {
+    ExpressionSlot(Expr expr) {
         exp = expr;
     }
 

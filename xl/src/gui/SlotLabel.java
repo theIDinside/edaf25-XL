@@ -20,15 +20,11 @@ public class SlotLabel extends ColoredLabel implements MouseListener, Observer {
 
     public SlotLabel(String addr, CurrentSlot current, SlotSheet slotSheet) {
         super("                    ", Color.WHITE, RIGHT);
-        // super(addr, Color.WHITE, RIGHT); // for testing purposes
         this.slotSheet = slotSheet;
         this.address = addr;
         addMouseListener(this);
         currentCell = current;
         slotSheet.addObserver(this);
-        // if we register _all_ slotlabels here, with slotSheet, then *every* slotlabel
-        // will be notified and updated every time a change has been made. If we hade 10 000 x 10 000 cells,
-        // that would lead up to 100 000 000 (one hundred million) notifications... murder death kill.
     }
 
     @Override
@@ -63,8 +59,6 @@ public class SlotLabel extends ColoredLabel implements MouseListener, Observer {
         if(slotSheet.hasCell(address)) {
             String data = slotSheet.display(address);
             setText(data);
-            if(getText().contains("----"))
-            this.setBackground(Color.RED);
         }
         else setText("");
         currentCell.deleteObserver(this);
