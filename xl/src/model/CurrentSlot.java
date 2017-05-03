@@ -14,9 +14,8 @@ public class CurrentSlot extends Observable {
     }
     public void setObserver(SlotLabel sl) {
         watchedLabel = sl;
-        if(countObservers() > 0)
-        notifyObservers();
         setChanged();
+        notifyObservers();
         addObserver(sl);
     }
 

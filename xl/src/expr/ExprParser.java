@@ -99,7 +99,6 @@ public class ExprParser {
     }
 
     private Expr factor() throws IOException {
-        System.out.println("factor; token: " + token);
         Expr e;
         switch (token) {
         case '(':
@@ -127,7 +126,6 @@ public class ExprParser {
     }
 
     private Expr term() throws IOException {
-        System.out.println("term; token: " + token);
         Expr result, factor;
         result = factor();
         while (token == '*' || token == '/') {

@@ -5,19 +5,23 @@ import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 import gui.menu.XLMenuBar;
 import model.CurrentSlot;
-import model.XLSheet;
+import model.SlotInterface;
+import model.SlotSheet;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
+import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class XL extends JFrame implements Printable {
     private static final int ROWS = 10, COLUMNS = 8;
     private XLCounter counter;
-
+    // lift out variables
+    private SlotSheet slotSheet;
+    private CurrentSlot currentSlot;
     private XLList xlList;
 
     public XL(XL oldXL) {
@@ -29,18 +33,18 @@ public class XL extends JFrame implements Printable {
         this.xlList = xlList;
         this.counter = counter;
         xlList.add(this);
-        CurrentSlot currentSlot = new CurrentSlot();
+        currentSlot = new CurrentSlot();
         counter.increment();
 
-        XLSheet xlSheet = new XLSheet(/* give a reference to the panel, which we should control / update? */);
-        StatusLabel statusLabel = new StatusLabel(xlSheet);
+        slotSheet = new SlotSheet(/* give a reference to the panel, which we should control / update? */);
+        StatusLabel statusLabel = new StatusLabel(slotSheet);
         JPanel statusPanel = new StatusPanel(statusLabel, currentSlot);
-        JPanel sheetPanel = new SheetPanel(ROWS, COLUMNS, currentSlot, xlSheet);
-        Editor editor = new Editor(currentSlot, xlSheet);
+        JPanel sheetPanel = new SheetPanel(ROWS, COLUMNS, currentSlot, slotSheet);
+        Editor editor = new Editor(currentSlot, slotSheet);
         add(NORTH, statusPanel);
         add(CENTER, editor);
         add(SOUTH, sheetPanel);
-        setJMenuBar(new XLMenuBar(this, xlList, statusLabel));
+        setJMenuBar(new XLMenuBar(this, xlList, statusLabel, slotSheet, currentSlot));
         pack();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
@@ -54,6 +58,18 @@ public class XL extends JFrame implements Printable {
         g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
         printAll(g2d);
         return PAGE_EXISTS;
+    }
+
+    public CurrentSlot getCurrentSlot() {
+        return this.getCurrentSlot();
+    }
+
+    public void setMapData(HashMap<String, SlotInterface> mapData) {
+        slotSheet.loadDataFrom(mapData);
+    }
+
+    public HashMap<String, SlotInterface> getMapData() {
+        return slotSheet.getData();
     }
 
     public void rename(String title) {

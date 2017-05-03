@@ -1,7 +1,7 @@
 package gui;
 
 import model.CurrentSlot;
-import model.XLSheet;
+import model.SlotSheet;
 import util.XLException;
 
 import java.awt.Color;
@@ -12,10 +12,10 @@ import java.util.Observer;
 import javax.swing.JTextField;
 
 public class Editor extends JTextField implements ActionListener, Observer {
-    private XLSheet xlSheet;
+    private SlotSheet slotSheet;
     private CurrentSlot editSlot;
-    public Editor(CurrentSlot currentSlot, XLSheet xlSheet) {
-        this.xlSheet = xlSheet;
+    public Editor(CurrentSlot currentSlot, SlotSheet slotSheet) {
+        this.slotSheet = slotSheet;
         this.editSlot = currentSlot;
         addActionListener(this);
         editSlot.addObserver(this);
@@ -25,41 +25,37 @@ public class Editor extends JTextField implements ActionListener, Observer {
     @Override
     public void actionPerformed(ActionEvent e) {
         String input = this.getText();
+        String address = editSlot.getCurrentAddress();
         if(input.equals("")) {
-            xlSheet.removeData(editSlot.getCurrentAddress());
+            slotSheet.removeData(address);
             setText("");
         }
         else {
             try {
-                xlSheet.addData(editSlot.getCurrentAddress(), input);
-                setText(String.valueOf(xlSheet.getCell(editSlot.getCurrentAddress())));
-                if(xlSheet.hasCell(editSlot.getCurrentAddress())) {
-                    update(null, input);
-                    editSlot.setText(xlSheet.getNotEvalContent(editSlot.getCurrentAddress()));
+                slotSheet.addData(address, input);
+                setText(String.valueOf(slotSheet.getSlot(address)));
+                if(slotSheet.hasCell(address)) {
+                     // update(null, input);
+                    editSlot.setText(slotSheet.display(address));
                 }
                 else setText("");
-            } catch (IOException | XLException ioe) {
-                System.out.println(ioe.getMessage());
-            } catch (CircularReferenceException cre) {
-                xlSheet.forcePutSlot(cre.getLastAddress(), cre.getLastSlot());
-                editSlot.setErrorText("Error");
-                xlSheet.notifyObservers();
-                /* We need to update:
-                    status panel
-                    SlotLabel (print something like "ERROR!" in the slot);
-                 */
-            } catch (NumberFormatException ignored) {
-                System.out.println(ignored.getMessage());
+            } catch (IOException | XLException | NumberFormatException ioe) {
+                System.out.println("ayo: " + ioe.getMessage());
+                slotSheet.setLastErrorMessage(ioe.getMessage());
+                slotSheet.setErrorMsg(address);
             } catch (NullPointerException npe) {
                 System.out.print(npe.getCause() + npe.getMessage());
+            } catch (Exception ex) {
+                throw ex;
             }
         }
     }
 
     @Override
     public void update(java.util.Observable o, Object arg) {
-        if(xlSheet.hasCell(editSlot.getCurrentAddress()))
-            setText(String.valueOf(xlSheet.getCell(editSlot.getCurrentAddress())));
+        String address = editSlot.getCurrentAddress();
+        if(slotSheet.hasCell(address))
+            setText(String.valueOf(slotSheet.getSlot(address)));
         else
             setText("");
     }
