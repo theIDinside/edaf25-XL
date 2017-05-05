@@ -22,7 +22,6 @@ public class SlotSheet extends Observable implements Environment {
     public SlotSheet() {
         theSheet = new HashMap<>();
     }
-
     public String getLastErrorMessage() {
         return lastMessage;
     }
@@ -30,12 +29,10 @@ public class SlotSheet extends Observable implements Environment {
     public void setErrorMsg(String address) {
         statusMessage = "Error at: " + address + " " + getLastErrorMessage();
     }
-
     public SlotInterface getSlot(String addr) {
         if(theSheet.containsKey(addr)) return theSheet.get(addr);
         else return null;
     }
-
     public void addData(String address, String data) throws IOException, XLException {
         SlotInterface slot;
         try {
@@ -57,7 +54,6 @@ public class SlotSheet extends Observable implements Environment {
         setChanged();
         notifyObservers();
     }
-
     private boolean validateSlot(String address, SlotInterface slot) {
         SlotInterface currentSlot = theSheet.get(address);
         theSheet.put(address, new PlaceHolderSlot());
@@ -71,7 +67,6 @@ public class SlotSheet extends Observable implements Environment {
         }
         return true;
     }
-
     public boolean removeData(String address) {
         if(theSheet.containsKey(address)) {
             theSheet.remove(address);
@@ -81,17 +76,14 @@ public class SlotSheet extends Observable implements Environment {
         } else
             return false;
     }
-
     public void clear() {
         theSheet = new HashMap<>(); // empty & update
         setChanged();
         notifyObservers();
     }
-
     public HashMap<String, SlotInterface> getData() {
         return theSheet;
     }
-
     public void loadDataFrom(HashMap<String, SlotInterface> map) {
         System.out.println("Loading data...");
         HashMap<String, SlotInterface> temp = theSheet; // make temporary backup of "old" sheet
@@ -118,7 +110,6 @@ public class SlotSheet extends Observable implements Environment {
         notifyObservers();
         statusMessage="";
     }
-
     @Override
     public double value(String address) throws NullPointerException, NumberFormatException {
         if(theSheet.get(address) == null) {
@@ -126,11 +117,9 @@ public class SlotSheet extends Observable implements Environment {
         }
             return theSheet.get(address).value(this);
     }
-
     public boolean hasCell(String address) {
         return theSheet.get(address) != null;
     }
-
     public String display(String address) {
         if(theSheet.containsKey(address)) try {
             return theSheet.get(address).display(this);

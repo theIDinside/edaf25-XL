@@ -7,6 +7,9 @@ import java.util.Observable;
 /**
  * Created by cx(theIDinside) on 2017-04-03.
  */
+
+// TODO: _PERHAPS_ MOVE OUT OF MODEL INTO VIEW, PERHAPS CUT CLASS DOWN TO JUST BEING A STRING
+
 public class CurrentSlot extends Observable {
     private SlotLabel watchedLabel;
     public CurrentSlot() {
