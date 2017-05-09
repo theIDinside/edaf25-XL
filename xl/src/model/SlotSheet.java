@@ -18,16 +18,18 @@ public class SlotSheet extends Observable implements Environment {
     HashMap<String, SlotInterface> theSheet;
     // this could possibly be Map<Variable, Slot>
     public String statusMessage = "";
-    String lastMessage;
+    private String lastErrorMessage;
     public SlotSheet() {
         theSheet = new HashMap<>();
     }
     public String getLastErrorMessage() {
-        return lastMessage;
+        return lastErrorMessage;
     }
-    public void setLastErrorMessage(String msg) { lastMessage = msg; }
-    public void setErrorMsg(String address) {
-        statusMessage = "Error at: " + address + " " + getLastErrorMessage();
+     // public void setLastErrorMessage(String msg) { lastErrorMessage = msg; }
+    public void setErrorMsg(String address, String errorMsg) {
+        statusMessage = "Error at: " + address + " " + errorMsg;
+        setChanged();
+        notifyObservers();
     }
     public SlotInterface getSlot(String addr) {
         if(theSheet.containsKey(addr)) return theSheet.get(addr);
@@ -37,9 +39,9 @@ public class SlotSheet extends Observable implements Environment {
         SlotInterface slot;
         try {
             slot = SlotBuilder.BuildSlot(data);
-        } catch (NumberFormatException nfe) {
-            System.out.println("Number format exception!");
-            throw nfe;
+        } catch (XLException | NumberFormatException nfe) {
+            System.err.println(nfe.getMessage());
+            throw new XLException(nfe.getMessage());
         }
         if(validateSlot(address, slot)) {
             theSheet.put(address, slot);
@@ -47,9 +49,7 @@ public class SlotSheet extends Observable implements Environment {
                 statusMessage = "";
             }
         } else {
-            StringBuilder errorMessageStringBuilder = new StringBuilder();
-            errorMessageStringBuilder.append("Error at: ").append(address).append(" ").append(getLastErrorMessage());
-            statusMessage = errorMessageStringBuilder.toString();
+            statusMessage = "Error at: " + address + " " + getLastErrorMessage();
         }
         setChanged();
         notifyObservers();
@@ -61,20 +61,18 @@ public class SlotSheet extends Observable implements Environment {
             slot.value(this);
         } catch (XLException | NullPointerException exception) { // if slot.value(this) fails
             statusMessage = "Erroneous input " + exception.getMessage();
-            setLastErrorMessage(exception.getMessage());
+            lastErrorMessage = exception.getMessage();
             theSheet.put(address, currentSlot); // put back old slot if there was one before
             return false;
         }
         return true;
     }
-    public boolean removeData(String address) {
+    public void removeData(String address) {
         if(theSheet.containsKey(address)) {
             theSheet.remove(address);
             setChanged();
             notifyObservers();
-            return true;
-        } else
-            return false;
+        }
     }
     public void clear() {
         theSheet = new HashMap<>(); // empty & update
@@ -86,11 +84,11 @@ public class SlotSheet extends Observable implements Environment {
     }
     public void loadDataFrom(HashMap<String, SlotInterface> map) {
         System.out.println("Loading data...");
-        HashMap<String, SlotInterface> temp = theSheet; // make temporary backup of "old" sheet
+        Map<String, SlotInterface> temp = theSheet; // make temporary backup of "old" sheet
         Iterator<Map.Entry<String, SlotInterface>> itr = map.entrySet().iterator(); // iterator over entries..
         theSheet = map;
         boolean isOk = true;
-        while(itr.hasNext() && isOk) {
+        while(isOk && itr.hasNext()) {
             Map.Entry<String, SlotInterface> entry = itr.next();
             String key = entry.getKey();
             SlotInterface value = entry.getValue();
@@ -99,7 +97,7 @@ public class SlotSheet extends Observable implements Environment {
                 if (validateSlot(key, value)) {
                     theSheet.put(key, value);
                 } else {
-                    theSheet = temp;
+                    theSheet = (HashMap<String, SlotInterface>) temp;
                     isOk = false;
                 }
             } catch (Exception e) {
@@ -120,12 +118,13 @@ public class SlotSheet extends Observable implements Environment {
     public boolean hasCell(String address) {
         return theSheet.get(address) != null;
     }
-    public String display(String address) {
-        if(theSheet.containsKey(address)) try {
-            return theSheet.get(address).display(this);
-        } catch (XLException | NullPointerException xlnpe) {
-            // if the "dereferencing" while _loading_ from files and throwing exceptions defined in expr, handle here
-            setErrorMsg(xlnpe.getMessage());
+    public String getCellTextValue(String address) {
+        if(theSheet.containsKey(address))
+            try {
+            return theSheet.get(address).textValue(this);
+        } catch (NullPointerException xlnpe) {
+            // if the "dereferencing" while _loading from files_ and throwing exceptions defined in expr, catch here
+            setErrorMsg(address, xlnpe.getMessage());
             throw xlnpe; // re-throw the exception to be handled somewhere else.
         }
         else return "";

@@ -16,7 +16,7 @@ public class PlaceHolderSlot implements SlotInterface {
     }
 
     @Override
-    public String display(Environment e) {
+    public String textValue(Environment e) {
         return "Circular Ref.";
     }
 }

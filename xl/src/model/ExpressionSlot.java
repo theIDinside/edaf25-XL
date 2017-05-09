@@ -19,7 +19,7 @@ public class ExpressionSlot implements SlotInterface {
     }
 
     @Override
-    public String display(Environment e) {
+    public String textValue(Environment e) {
         return Double.toString(value(e));
     }
 

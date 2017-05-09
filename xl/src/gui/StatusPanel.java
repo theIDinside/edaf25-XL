@@ -1,7 +1,5 @@
 package gui;
 
-import model.CurrentSlot;
-
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.WEST;
 

@@ -1,6 +1,5 @@
 package gui;
 
-import model.CurrentSlot;
 import model.SlotSheet;
 
 import java.awt.*;
@@ -12,7 +11,7 @@ import java.util.Observer;
 public class SlotLabel extends ColoredLabel implements MouseListener, Observer {
     String address; // "A1" or "G7" etc..
     private SlotSheet slotSheet;
-    CurrentSlot currentCell;
+    private CurrentSlot currentCell;
 
     public String getAddress() {
         return address;
@@ -56,8 +55,8 @@ public class SlotLabel extends ColoredLabel implements MouseListener, Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if(slotSheet.hasCell(address)) {
-            String data = slotSheet.display(address);
+        if(slotSheet.hasCell(address)) { // för att inte få nullpointer exceptions
+            String data = slotSheet.getCellTextValue(address);
             setText(data);
         }
         else setText("");

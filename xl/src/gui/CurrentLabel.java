@@ -1,7 +1,5 @@
 package gui;
 
-import model.CurrentSlot;
-
 import java.awt.Color;
 import java.util.Observer;
 

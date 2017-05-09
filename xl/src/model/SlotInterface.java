@@ -7,6 +7,6 @@ import expr.Environment;
  */
 public interface SlotInterface {
     double value(Environment e);
-    String display(Environment e);
-    String toString();
+    String textValue(Environment e);
+
 }

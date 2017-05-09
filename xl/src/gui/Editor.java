@@ -1,6 +1,5 @@
 package gui;
 
-import model.CurrentSlot;
 import model.SlotSheet;
 import util.XLException;
 
@@ -35,16 +34,13 @@ public class Editor extends JTextField implements ActionListener, Observer {
                 slotSheet.addData(address, input);
                 setText(String.valueOf(slotSheet.getSlot(address)));
                 if(slotSheet.hasCell(address)) {
-                   editSlot.setText(slotSheet.display(address));
+                   editSlot.setText(slotSheet.getCellTextValue(address));
                 }
                 else setText("");
             } catch (IOException | XLException | NumberFormatException ioe) {
-                slotSheet.setLastErrorMessage(ioe.getMessage());
-                slotSheet.setErrorMsg(address);
+                slotSheet.setErrorMsg(address, ioe.getMessage());
             } catch (NullPointerException npe) {
                 System.out.print(npe.getCause() + npe.getMessage());
-            } catch (Exception ex) {
-                throw ex;
             }
         }
     }

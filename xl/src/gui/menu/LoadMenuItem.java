@@ -29,9 +29,6 @@ class LoadMenuItem extends OpenMenuItem {
         HashMap<String, SlotInterface> slotMap = new HashMap<>();
         try {
             bufferedReader.load(slotMap); // load content into slotMap
-            for(Map.Entry<String, SlotInterface> e : slotMap.entrySet()) {
-                System.out.println(e.getKey() +":"+ e.getValue());
-            }
         } catch (XLException | NullPointerException xle) {
             String errorMessage = String.format("Error while loading content from file: %s", xle.getMessage());
             statusLabel.setText(errorMessage);

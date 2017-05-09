@@ -1,4 +1,4 @@
-package model;
+package gui;
 
 import gui.SlotLabel;
 import java.awt.*;

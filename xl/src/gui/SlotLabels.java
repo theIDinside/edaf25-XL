@@ -1,6 +1,5 @@
 package gui;
 
-import model.CurrentSlot;
 import model.SlotSheet;
 
 import java.awt.Color;
@@ -13,7 +12,7 @@ public class SlotLabels extends GridPanel {
 
     public  SlotLabels(int rows, int cols, CurrentSlot current, SlotSheet slotSheet) {
         super(rows + 1, cols);
-        labelList = new ArrayList<SlotLabel>(rows * cols);
+        labelList = new ArrayList<>(rows * cols);
         for (char ch = 'A'; ch < 'A' + cols; ch++) {
             add(new ColoredLabel(Character.toString(ch), Color.LIGHT_GRAY,
                     SwingConstants.CENTER));

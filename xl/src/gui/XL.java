@@ -4,7 +4,6 @@ import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.BorderLayout.SOUTH;
 import gui.menu.XLMenuBar;
-import model.CurrentSlot;
 import model.SlotInterface;
 import model.SlotSheet;
 
@@ -36,7 +35,7 @@ public class XL extends JFrame implements Printable {
         currentSlot = new CurrentSlot();
         counter.increment();
 
-        slotSheet = new SlotSheet(/* give a reference to the panel, which we should control / update? */);
+        slotSheet = new SlotSheet();
         StatusLabel statusLabel = new StatusLabel(slotSheet);
         JPanel statusPanel = new StatusPanel(statusLabel, currentSlot);
         JPanel sheetPanel = new SheetPanel(ROWS, COLUMNS, currentSlot, slotSheet);
@@ -60,14 +59,9 @@ public class XL extends JFrame implements Printable {
         return PAGE_EXISTS;
     }
 
-    public CurrentSlot getCurrentSlot() {
-        return this.getCurrentSlot();
-    }
-
     public void setMapData(HashMap<String, SlotInterface> mapData) {
         slotSheet.loadDataFrom(mapData);
     }
-
     public HashMap<String, SlotInterface> getMapData() {
         return slotSheet.getData();
     }

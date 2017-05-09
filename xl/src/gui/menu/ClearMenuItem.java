@@ -1,6 +1,6 @@
 package gui.menu;
 
-import model.CurrentSlot;
+import gui.CurrentSlot;
 import model.SlotSheet;
 
 import java.awt.event.ActionEvent;

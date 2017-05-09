@@ -3,9 +3,8 @@ package gui.menu;
 import gui.StatusLabel;
 import gui.XL;
 import gui.XLList;
-import model.CurrentSlot;
+import gui.CurrentSlot;
 import model.SlotSheet;
-import sun.util.resources.cldr.ebu.CurrencyNames_ebu;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

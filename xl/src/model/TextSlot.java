@@ -16,7 +16,7 @@ public class TextSlot implements SlotInterface {
     }
 
     @Override
-    public String display(Environment e) {
+    public String textValue(Environment e) {
         return data.substring(1);
     }
     @Override
